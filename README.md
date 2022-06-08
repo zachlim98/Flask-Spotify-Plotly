@@ -14,6 +14,6 @@ Simply fork the repo and you can start modifying `app.py` to suit your needs. Th
 - SPOTIPY_SECRET_KEY
 - SPOTIPY_REDIRECT_URI
 
-These can be gotten from your Spotify Developer dashboard. Ensure that the REDIRECT_URL is https:<your-heroku-app>/ and that it is the same in both your Spotify Developer dashboard and Heroku. 
+These can be gotten from your Spotify Developer dashboard. Ensure that the REDIRECT_URL is https:`<your-heroku-app>`/ and that it is the same in both your Spotify Developer dashboard and Heroku. 
 
 Please do credit if you use this baseline. Thank you and all the best!
