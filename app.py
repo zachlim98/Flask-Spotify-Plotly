@@ -83,10 +83,10 @@ def sign_out():
 
 @app.route('/playlists')
 def playlists():
-    cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
+    cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=scaches_folder)
     auth_manager = spotipy.oauth2.SpotifyOAuth(cache_handler=cache_handler)
-    # if not auth_manager.validate_token(cache_handler.get_cached_token()):
-    #     return redirect('/')
+    if not auth_manager.validate_token(cache_handler.get_cached_token()):
+        return redirect('/')
 
     spotify = spotipy.Spotify(auth_manager=auth_manager)
     name = spotify.me()["display_name"]
