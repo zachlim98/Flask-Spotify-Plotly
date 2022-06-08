@@ -25,6 +25,9 @@ from flask_session import Session
 import spotipy
 import uuid
 
+import plotly
+import plotly.express as px
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(64)
 app.config['SESSION_TYPE'] = 'filesystem'
@@ -44,7 +47,7 @@ def index():
         # Step 1. Visitor is unknown, give random ID
         session['uuid'] = str(uuid.uuid4())
 
-    cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=caches_folder)
+    cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
     auth_manager = spotipy.oauth2.SpotifyOAuth(scope='user-read-currently-playing playlist-modify-private',
                                                 cache_handler=cache_handler, 
                                                 show_dialog=True)
@@ -66,35 +69,30 @@ def display_page():
     spotify = spotipy.Spotify(auth = session["token"])
     return f'<h2>Hi {spotify.me()["display_name"]}, ' \
         f'<small><a href="/sign_out">[sign out]<a/></small></h2>' \
-        f'<a href="/playlists">my playlists</a> | ' \
-        f'<a href="/currently_playing">currently playing</a> | ' \
+        f'<a href="/artist_route">Top Artists</a> | ' \
         f'<a href="/current_user">me</a>' \
 
 @app.route('/sign_out')
 def sign_out():
     try:
         # Remove the CACHE file (.cache-test) so that a new user can authorize.
-        os.remove(session_cache_path())
+        os.remove(caches_folder)
         session.clear()
     except OSError as e:
         print ("Error: %s - %s." % (e.filename, e.strerror))
     return redirect('/')
 
 
-@app.route('/playlists')
-def playlists():
-    cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=caches_folder)
-    auth_manager = spotipy.oauth2.SpotifyOAuth(cache_handler=cache_handler)
-    if not auth_manager.validate_token(cache_handler.get_cached_token()):
-        return redirect('/')
-
-    spotify = spotipy.Spotify(auth_manager=auth_manager)
-    name = spotify.me()["display_name"]
-    return f'<h2>{name} playlists: </h2>'
+@app.route('/artist_route')
+def artist_route():
+    return f'<h2>Please choose the duration history that you would like to see' \
+        f'<a href="/long_term">Literally since you created a Spotify account</a> | ' \
+        f'<a href="/mid_term">Last 6 months</a>' \
+        f'<a href="/short_term">Last 4 weeks</a>' \
 
 
-@app.route('/currently_playing')
-def currently_playing():
+@app.route('/long_term')
+def long_term():
     cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
     auth_manager = spotipy.oauth2.SpotifyOAuth(cache_handler=cache_handler)
     if not auth_manager.validate_token(cache_handler.get_cached_token()):
