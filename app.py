@@ -51,17 +51,19 @@ def index():
 
     if request.args.get("code"):
         # Step 3. Being redirected from Spotify auth page
-        auth_manager.get_access_token(request.args.get("code"))
-        return redirect('/')
+        aut_code = auth_manager.get_access_token(request.args.get("code"))
+        session["token"] = auth_manager.get_access_token(aut_code)["access_token"]
+        return redirect('/logged')
 
     if not auth_manager.validate_token(cache_handler.get_cached_token()):
         # Step 2. Display sign in link when no token
         auth_url = auth_manager.get_authorize_url()
         return f'<h2><a href="{auth_url}">Sign in</a></h2>'
 
-    print("returning to start page but LAG")
+@app.route('/logged')
+def display_page():
     # Step 4. Signed in, display data
-    spotify = spotipy.Spotify(auth_manager=auth_manager)
+    spotify = spotipy.Spotify(auth = session["token"])
     return f'<h2>Hi {spotify.me()["display_name"]}, ' \
         f'<small><a href="/sign_out">[sign out]<a/></small></h2>' \
         f'<a href="/playlists">my playlists</a> | ' \
