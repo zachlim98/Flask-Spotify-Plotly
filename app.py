@@ -36,9 +36,9 @@ app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_FILE_DIR'] = './.flask_session/'
 Session(app)
 
-caches_folder = '.spotify_caches'
-# if not os.path.exists(caches_folder):
-#     os.makedirs(caches_folder)
+caches_folder = '.spotify_caches/'
+if not os.path.exists(caches_folder):
+    os.makedirs(caches_folder)
 
 def session_cache_path():
     return caches_folder + session.get('uuid')
