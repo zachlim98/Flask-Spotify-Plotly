@@ -89,7 +89,7 @@ def sign_out():
 def artist_route():
     return f'<h2>Please choose the duration history that you would like to see </h2>' \
         f'<a href="/long_term">Literally since you created a Spotify account</a> | ' \
-        f'<a href="/mid_term">Last 6 months</a> |' \
+        f'<a href="/medium_term">Last 6 months</a> |' \
         f'<a href="/short_term">Last 4 weeks</a> |' \
 
 
