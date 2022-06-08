@@ -49,6 +49,9 @@ def index():
                                                 cache_handler=cache_handler, 
                                                 show_dialog=True)
 
+    session["auth"] = auth_manager
+    session["cache"] = cache_handler
+
     if request.args.get("code"):
         # Step 3. Being redirected from Spotify auth page
         auth_manager.get_access_token(request.args.get("code"))
@@ -62,13 +65,9 @@ def index():
 
 @app.route('/logged')
 def loged_in():
-    cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
-    auth_manager = spotipy.oauth2.SpotifyOAuth(scope='user-read-currently-playing playlist-modify-private',
-                                                cache_handler=cache_handler, 
-                                                show_dialog=False)
 
-        # Step 4. Signed in, display data
-    spotify = spotipy.Spotify(auth_manager=auth_manager)
+    # Step 4. Signed in, display data
+    spotify = spotipy.Spotify(auth_manager=session.get('cache'))
     return f'<h2>Hi {spotify.me()["display_name"]}, ' \
            f'<small><a href="/sign_out">[sign out]<a/></small></h2>' \
            f'<a href="/playlists">my playlists</a> | ' \
