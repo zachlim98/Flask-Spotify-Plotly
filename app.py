@@ -25,6 +25,8 @@ from flask_session import Session
 import spotipy
 import uuid
 
+import plotly.express as px
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(64)
 app.config['SESSION_TYPE'] = 'filesystem'
@@ -82,10 +84,10 @@ def sign_out():
 
 @app.route('/artist_route')
 def artist_route():
-    return f'<h2>Please choose the duration history that you would like to see' \
+    return f'<h2>Please choose the duration history that you would like to see </h2>' \
         f'<a href="/long_term">Literally since you created a Spotify account</a> | ' \
-        f'<a href="/mid_term">Last 6 months</a>' \
-        f'<a href="/short_term">Last 4 weeks</a>' \
+        f'<a href="/mid_term">Last 6 months</a> |' \
+        f'<a href="/short_term">Last 4 weeks</a> |' \
 
 
 @app.route('/long_term')
