@@ -89,7 +89,7 @@ def playlists():
         return redirect('/')
 
     spotify = spotipy.Spotify(auth_manager=auth_manager)
-    return spotify.current_user_playlists()
+    return f'Your playlists: {spotify.current_user_playlists()}'
 
 
 @app.route('/currently_playing')
