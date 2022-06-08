@@ -67,7 +67,7 @@ def index():
 def loged_in():
 
     # Step 4. Signed in, display data
-    spotify = spotipy.Spotify(auth_manager=session.get('cache'))
+    spotify = spotipy.Spotify(auth_manager=session.get('auth'))
     return f'<h2>Hi {spotify.me()["display_name"]}, ' \
            f'<small><a href="/sign_out">[sign out]<a/></small></h2>' \
            f'<a href="/playlists">my playlists</a> | ' \
