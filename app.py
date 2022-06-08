@@ -100,10 +100,23 @@ def long_term():
     if not auth_manager.validate_token(cache_handler.get_cached_token()):
         return redirect('/')
     spotify = spotipy.Spotify(auth_manager=auth_manager)
-    track = spotify.current_user_playing_track()
-    if not track is None:
-        return track
-    return "No track currently playing."
+
+    st = spotify.current_user_top_artists(time_range="long_term")
+
+    name = []
+    popularity =[]
+
+    for i in st["items"]:
+        name.append(i["name"])
+        popularity.append(i["popularity"])
+
+    df = pd.DataFrame({"Name" : name, "Popularity" : popularity})
+
+    fig = px.pie(df, values = "Popularity", names="Name")
+
+    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+    return render_template('long_term.html', graphJSON=graphJSON)
 
 
 @app.route('/short_term')
@@ -131,6 +144,30 @@ def short_term():
 
     return render_template('short_term.html', graphJSON=graphJSON)
 
+@app.route('/medium_term')
+def short_term():
+    cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
+    auth_manager = spotipy.oauth2.SpotifyOAuth(cache_handler=cache_handler)
+    if not auth_manager.validate_token(cache_handler.get_cached_token()):
+        return redirect('/')
+    spotify = spotipy.Spotify(auth_manager=auth_manager)
+
+    st = spotify.current_user_top_artists(time_range="medium_term")
+
+    name = []
+    popularity =[]
+
+    for i in st["items"]:
+        name.append(i["name"])
+        popularity.append(i["popularity"])
+
+    df = pd.DataFrame({"Name" : name, "Popularity" : popularity})
+
+    fig = px.pie(df, values = "Popularity", names="Name")
+
+    graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+    return render_template('medium_term.html', graphJSON=graphJSON)
 
 '''
 Following lines allow application to be run more conveniently with
