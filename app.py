@@ -49,30 +49,24 @@ def index():
                                                 cache_handler=cache_handler, 
                                                 show_dialog=True)
 
-    session["auth"] = auth_manager
-    session["cache"] = cache_handler
-
     if request.args.get("code"):
         # Step 3. Being redirected from Spotify auth page
         auth_manager.get_access_token(request.args.get("code"))
-        return redirect('/logged')
+        return redirect('/')
 
     if not auth_manager.validate_token(cache_handler.get_cached_token()):
         # Step 2. Display sign in link when no token
         auth_url = auth_manager.get_authorize_url()
         return f'<h2><a href="{auth_url}">Sign in</a></h2>'
 
-
-@app.route('/logged')
-def loged_in():
-
-    # Step 4. Signed in, display data
-    spotify = spotipy.Spotify(auth_manager=session.get('auth'))
-    return f'<h2>Hi {spotify.me()["display_name"]}, ' \
-           f'<small><a href="/sign_out">[sign out]<a/></small></h2>' \
-           f'<a href="/playlists">my playlists</a> | ' \
-           f'<a href="/currently_playing">currently playing</a> | ' \
-		   f'<a href="/current_user">me</a>' \
+    else:
+        # Step 4. Signed in, display data
+        spotify = spotipy.Spotify(auth_manager=auth_manager)
+        return f'<h2>Hi {spotify.me()["display_name"]}, ' \
+            f'<small><a href="/sign_out">[sign out]<a/></small></h2>' \
+            f'<a href="/playlists">my playlists</a> | ' \
+            f'<a href="/currently_playing">currently playing</a> | ' \
+            f'<a href="/current_user">me</a>' \
 
 
 @app.route('/sign_out')
