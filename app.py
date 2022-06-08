@@ -62,6 +62,11 @@ def index():
 
 @app.route('/logged')
 def loged_in():
+    cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=session_cache_path())
+    auth_manager = spotipy.oauth2.SpotifyOAuth(scope='user-read-currently-playing playlist-modify-private',
+                                                cache_handler=cache_handler, 
+                                                show_dialog=False)
+
         # Step 4. Signed in, display data
     spotify = spotipy.Spotify(auth_manager=auth_manager)
     return f'<h2>Hi {spotify.me()["display_name"]}, ' \
