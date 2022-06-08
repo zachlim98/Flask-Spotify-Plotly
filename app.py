@@ -25,9 +25,6 @@ from flask_session import Session
 import spotipy
 import uuid
 
-import plotly
-import plotly.express as px
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.urandom(64)
 app.config['SESSION_TYPE'] = 'filesystem'
